@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <table>
+        <tr>
+          <th>id</th>
+          <th>用户名</th>
+          <th>邮箱</th>
+          <th>性别</th>
+          <th>爱好</th>
+          <th>操作</th>
+        </tr>
+        <tr v-cloak v-for="(item, index) of formData">
+          <td>{{ item.id }}</td>
+          <td>{{ item.username }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.gender }}</td>
+          <td>{{ item.hobby.join(' | ') }}</td>
+          <td>
+            <button @click="modify(index)">修改</button>
+            <button @click="deleteData(index)">删除</button>
+          </td>
+        </tr>
+      </table>
+
+      <modify-panel
+        :visible.sync="showModifyPanel"
+        :item="currentModifyItem"
+        @save="handleSave"
+      >
+      </modify-panel>
+    </div>
+
+    <script>
+      const formData = [
+        {
+          id: 1,
+          username: "小红",
+          email: "xiaohong@qq.com",
+          gender: "女",
+          hobby: ["弹琴", "读书"],
+        },
+        {
+          id: 2,
+          username: "小黑",
+          email: "xiaohei@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 3,
+          username: "小亮",
+          email: "xiaoliang@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 4,
+          username: "小五",
+          email: "xiaowu@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 5,
+          username: "小海",
+          email: "aaa@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 6,
+          username: "小紫",
+          email: "aaa@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+      ];
+
+      // 修改面板
+      const ModifyPanel = {
+        template: `
+        
+        <div v-if="visible">
+              <div class="content">
+        <table>
+          <tr>
+            <td>用户名</td>
+            <td><input type="text"  v-model="username"/></td>
+          </tr>
+          <tr>
+            <td>邮箱</td>
+            <td><input type="text"  v-model="email"/></td>
+          </tr>
+
+          <tr>
+            <td>性别</td>
+            <td>
+              <label> <input type="radio" name="sex" value="男" v-model="gender" />男 </label>
+              <label><input type="radio" name="sex" value="女" v-model="gender" />女</label>
+              <label><input type="radio" name="sex" value="未知"v-model="gender" />未知</label>
+            </td>
+          </tr>
+
+          <tr>
+            <td>爱好</td>
+            <td>
+              <label><input type="checkbox" value="篮球" v-model="hobby" />篮球</label>
+              <label><input type="checkbox" value="读书" v-model="hobby" />读书</label>
+              <label><input type="checkbox" value="插画" v-model="hobby" />插画</label>
+              <label><input type="checkbox" value="编程" v-model="hobby" />编程</label>
+              <label><input type="checkbox" value="弹琴" v-model="hobby" />弹琴</label>
+            </td>
+          </tr>
+        </table>
+        <p>
+          <button @click="cancel">取消</button>
+          <button @click="save">保存</button>
+        </p>
+      </div>
+              </div>`,
+
+        props: ["item", "visible"],
+        watch: {
+          item(val) {
+            this.username = val.username;
+            this.hobby = val.hobby;
+            this.email = val.email;
+            this.gender = val.gender;
+          },
+        },
+        methods: {
+          cancel() {
+            // 直接关闭当前面板即可
+            this.$emit("update:visible", false);
+          },
+          save() {
+            this.$emit("save", {
+              id: this.item.id,
+              hobby: this.hobby,
+              email: this.email,
+              gender: this.gender,
+              username: this.username,
+            });
+            // 保存完成后关闭页面
+            this.$emit("update:visible", false);
+          },
+        },
+        data() {
+          return {
+            hobby: "",
+            username: "",
+            email: "",
+            gender: "",
+          };
+        },
+      };
+
+      const app = new Vue({
+        el: "#app",
+        components: {
+          ModifyPanel,
+        },
+        data: {
+          formData,
+          showModifyPanel: false,
+          currentModifyIndex: -1,
+        },
+        computed: {
+          currentModifyItem() {
+            return this.formData[this.currentModifyIndex];
+          },
+        },
+        methods: {
+          findDataById(id) {
+            return this.formData.find((d) => d.id === id);
+          },
+
+          handleSave(info) {
+            // 基于id找到具体的数据
+            const rawData = this.findDataById(info.id);
+            if (rawData) {
+              rawData.hobby = info.hobby;
+              rawData.username = info.username;
+              rawData.email = info.email;
+              rawData.gender = info.gender;
+            }
+          },
+          modify(index) {
+            this.showModifyPanel = true;
+            this.currentModifyIndex = index;
+          },
+          deleteData(index) {
+            // 删除指定的数据
+            this.formData.splice(index, 1);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
