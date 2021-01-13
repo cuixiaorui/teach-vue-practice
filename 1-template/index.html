@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <table>
+        <tr>
+          <th>id</th>
+          <th>用户名</th>
+          <th>邮箱</th>
+          <th>性别</th>
+          <th>爱好</th>
+          <th>操作</th>
+        </tr>
+        <tr v-cloak v-for="(item, index) of formData">
+          <td>{{ item.id }}</td>
+          <td>{{ item.username }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.gender }}</td>
+          <td>{{ item.hobby.join(' | ') }}</td>
+          <td>
+            <button @click="deleteData(index)">删除</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <script>
+      const formData = [
+        {
+          id: 1,
+          username: "小红",
+          email: "xiaohong@qq.com",
+          gender: "女",
+          hobby: ["游泳", "读书"],
+        },
+        {
+          id: 2,
+          username: "小黑",
+          email: "xiaohei@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 3,
+          username: "小亮",
+          email: "xiaoliang@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 4,
+          username: "小五",
+          email: "xiaowu@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 5,
+          username: "小海",
+          email: "aaa@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+        {
+          id: 6,
+          username: "小紫",
+          email: "aaa@qq.com",
+          gender: "男",
+          hobby: ["篮球", "读书", "编程"],
+        },
+      ];
+
+      const app = new Vue({
+        el: "#app",
+        data: {
+          formData,
+        },
+        methods: {
+          deleteData(index) {
+            // 删除指定的数据
+            this.formData.splice(index, 1);
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
