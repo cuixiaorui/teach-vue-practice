@@ -36,6 +36,11 @@ export default {
       // 只要不为空即可
       if (!this.username || !this.password) return;
 
+      const user = {
+        username: this.username,
+      };
+      localStorage.getItem("user", JSON.stringify(user));
+
       // to home page
       this.$router.push({
         name: "Home",
