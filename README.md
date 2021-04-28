@@ -163,4 +163,4 @@
 
 - 实现事件功能（5 分）
   - 在 props 中给定 onClick 之后，会自动给当前 el 添加 click 事件
-- 通过 h 函数 + watchEffect 完成 count double 的逻辑编写（5 分）
+- 通过 h 函数 + effect 完成 count double 的逻辑编写（5 分）
