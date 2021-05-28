@@ -5,10 +5,16 @@
     <div><input type="text" v-model="newTodo" @keyup.enter="addTodo" /></div>
     <div>
       <ul>
-        <li v-for="item in todoList" :key="item.id">
+        <li v-for="item in showTodoList" :key="item.id">
           <TodoItem :item="item"></TodoItem>
         </li>
       </ul>
+    </div>
+
+    <div>
+      <el-button @click="changeShowMode('all')">all</el-button>
+      <el-button @click="changeShowMode('active')">active</el-button>
+      <el-button @click="changeShowMode('completed')">completed</el-button>
     </div>
   </div>
 </template>
@@ -28,6 +34,23 @@ export default {
 
     const newTodo = ref("");
 
+    const currentShowMode = ref("all");
+    const showTodoList = computed(() => {
+      return store.state.todoList.filter((todoItem) => {
+        if (currentShowMode.value === "all") {
+          return todoItem;
+        } else if (currentShowMode.value === "active") {
+          return todoItem.state === "active";
+        } else if (currentShowMode.value === "completed") {
+          return todoItem.state === "completed";
+        }
+      });
+    });
+
+    const changeShowMode = (mode) => {
+      currentShowMode.value = mode;
+    };
+
     const addTodo = () => {
       store.commit("addTodo", {
         context: newTodo.value,
@@ -38,6 +61,8 @@ export default {
     };
 
     return {
+      changeShowMode,
+      showTodoList,
       newTodo,
       addTodo,
       todoList,
